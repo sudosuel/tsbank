@@ -43,10 +43,11 @@ jobs:
         echo $(ls)
         mkdir -p release
         mv $ZIP_NAME release/
+        cd release/
         echo $(ls)
 
     - name: Upload release package
       uses: actions/upload-artifact@v4.3.4
       with:
         name: release-package
-        path: release/
+        path: dist/
