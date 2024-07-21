@@ -42,7 +42,7 @@ jobs:
         TAG_NAME=$(echo $GITHUB_REF | sed 's/refs\/tags\///')
         ZIP_NAME_API="${TAG_NAME}.zip"
         cd ..
-        zip -r $ZIP_NAME .
+        zip -r $ZIP_NAME *
         echo $(ls)
         mkdir -p release
         mv $ZIP_NAME release/
