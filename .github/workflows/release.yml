@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Release Candidate Pipeline
 
 on:
   push:
@@ -41,4 +41,6 @@ jobs:
       uses: actions/upload-artifact@v4.3.4
       with:
         name: ${{ github.ref_name }}
-        path: ./
+        path: |
+          ./
+          !./.git/
