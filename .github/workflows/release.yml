@@ -20,7 +20,7 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v4.0.3
       with:
-        node-version: '21.x'
+        node-version: '20.x'
 
     - name: Install dependencies
       run: npm ci
@@ -40,11 +40,13 @@ jobs:
         ZIP_NAME="${TAG_NAME}.zip"
         # Create the zip file excluding the node_modules folder
         zip -r $ZIP_NAME . -x "node_modules/*"
+        echo $(ls)
         mkdir -p release
         mv $ZIP_NAME release/
+        echo $(ls)
 
     - name: Upload release package
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4.3.4
       with:
         name: release-package
         path: release/
