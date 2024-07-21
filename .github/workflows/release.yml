@@ -38,7 +38,8 @@ jobs:
       run: |
         TAG_NAME=$(echo $GITHUB_REF | sed 's/refs\/tags\///')
         ZIP_NAME="${TAG_NAME}.zip"
-        tar -czvf $ZIP_NAME .
+        # Create the zip file excluding the node_modules folder
+        zip -r $ZIP_NAME . -x "node_modules/*"
         mkdir -p release
         mv $ZIP_NAME release/
 
