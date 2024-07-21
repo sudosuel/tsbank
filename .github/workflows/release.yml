@@ -34,20 +34,21 @@ jobs:
     - name: Build the project
       run: npm run build --if-present
 
+    - name: Remove node_modules folder
+      run: rm -rf node_modules
+
     - name: Create release package
       run: |
         TAG_NAME=$(echo $GITHUB_REF | sed 's/refs\/tags\///')
-        ZIP_NAME="${TAG_NAME}.zip"
-        # Create the zip file excluding the node_modules folder
-        zip -r $ZIP_NAME . -x "node_modules/*"
+        ZIP_NAME_API="${TAG_NAME}.zip"
+        cd ..
+        zip -r $ZIP_NAME .
         echo $(ls)
         mkdir -p release
         mv $ZIP_NAME release/
-        cd release/
-        echo $(ls)
 
     - name: Upload release package
       uses: actions/upload-artifact@v4.3.4
       with:
         name: release-package
-        path: dist/
+        path: release/
