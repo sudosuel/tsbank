@@ -127,10 +127,8 @@ jobs:
         
         REPO="sudosuel/tsbank"
 
-        # Defina o token de acesso pessoal do GitHub
         GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         
-        # Obtenha o SHA do commit mais recente na branch principal (geralmente 'main' ou 'master')
         SHA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$REPO/commits/main" | jq -r '.sha')
         echo "sha do commit: $SHA"
 
@@ -138,13 +136,12 @@ jobs:
         -d @- "https://api.github.com/repos/$REPO/git/tags" <<EOF
         {
           "tag": "$NEW_TAG",
-          "message": "$TAG_MESSAGE",
+          "message": "Release $NEW_TAG",
           "object": "$SHA",
           "type": "commit"
         }
         EOF
 
-        # Crie a referência para a nova tag
         curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
         -d @- "https://api.github.com/repos/$REPO/git/refs" <<EOF
         {
