@@ -96,3 +96,33 @@ jobs:
         path: |
           ./release
           !./.git/
+    
+  tag:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.7
+
+    - name: Create release tag
+      run: |
+        LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
+        
+        prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
+        major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
+        minor=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f2)
+        
+        minor=$((minor + 1))
+        
+        if [ "$minor" -eq 10 ]; then
+          minor=0
+          major=$((major + 1))
+        fi
+        
+        NEW_TAG="$prefix-$major.$minor"
+        
+        echo "New tag: $NEW_TAG"
+        
+        git tag -a $NEW_TAG -m "Release $NEW_TAG"
+        git push origin tag $NEW_TAG
