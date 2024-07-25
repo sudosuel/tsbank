@@ -38,7 +38,7 @@ jobs:
 
     - name: Create Docker image
       run: |
-        LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+        LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
         
         prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
         major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
@@ -66,7 +66,7 @@ jobs:
 
     - name: Push Docker image
       run: |
-        LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+        LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
         
         prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
         major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
