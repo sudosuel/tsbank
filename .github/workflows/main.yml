@@ -104,7 +104,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.1.7
-
+      env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Create release tag
       run: |
         LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
@@ -126,6 +127,3 @@ jobs:
         
         git tag -a $NEW_TAG -m "Release $NEW_TAG"
         git push origin tag $NEW_TAG
-        
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
