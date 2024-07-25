@@ -159,7 +159,7 @@ export class AccountService {
 
     if (toAccount.type === 'Bonus') {
       toAccountData = {
-        ...toAccount,
+        ...toAccountData,
         bonusScore: addPointsToBonusAccount({
           currentBonusAccount: toAccount.bonusScore,
           operationType: 'transfer',
@@ -182,7 +182,7 @@ export class AccountService {
       where: { number: toAccount.number },
       data: {
         ...toAccountDataWithoutId,
-        balance: toAccountDataWithoutId.balance + amount,
+        balance: toAccountDataWithoutId.balance,
       },
     });
 
@@ -200,7 +200,7 @@ export class AccountService {
 
     return this.prisma.account.update({
       where: {
-        id: account.id,
+        number: account.number,
       },
       data: {
         balance: newBalance,
@@ -221,7 +221,7 @@ export class AccountService {
 
       return this.prisma.account.update({
         where: {
-          id: account.id,
+          number: account.number,
         },
         data: {
           balance: newBalance,
