@@ -24,89 +24,19 @@ jobs:
       with:
         node-version: '20.x'
 
-    # - name: Install dependencies
-    #   run: npm ci
+    - name: Install dependencies
+      run: npm ci
 
-    # - name: Run static code analysis
-    #   run: npm run lint
+    - name: Run static code analysis
+      run: npm run lint
 
-    # - name: Run unit tests
-    #   run: npm run test
+    - name: Run unit tests
+      run: npm run test
 
-    # - name: Build the project
-    #   run: npm run build --if-present
+    - name: Build the project
+      run: npm run build --if-present
 
-    # - name: Create Docker image
-    #   run: |
-    #     LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
-        
-    #     prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
-    #     major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
-    #     minor=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f2)
-        
-    #     minor=$((minor + 1))
-        
-    #     if [ "$minor" -eq 10 ]; then
-    #       minor=0
-    #       major=$((major + 1))
-    #     fi
-        
-    #     NEW_TAG="$prefix-$major.$minor"
-        
-    #     echo "New tag: $NEW_TAG"
-        
-    #     docker build -t lexmarcos/tsbank:$NEW_TAG .
-    #     docker tag lexmarcos/tsbank:$NEW_TAG lexmarcos/tsbank:latest
-
-    # - name: Login to Docker Hub
-    #   uses: docker/login-action@v3.2.0
-    #   with:
-    #     username: ${{ secrets.DOCKER_USERNAME }}
-    #     password: ${{ secrets.DOCKER_PASSWORD }}
-
-    # - name: Push Docker image
-    #   run: |
-    #     LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
-        
-    #     prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
-    #     major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
-    #     minor=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f2)
-        
-    #     minor=$((minor + 1))
-        
-    #     if [ "$minor" -eq 10 ]; then
-    #       minor=0
-    #       major=$((major + 1))
-    #     fi
-        
-    #     NEW_TAG="$prefix-$major.$minor"
-        
-    #     echo "New tag: $NEW_TAG"
-        
-    #     docker push lexmarcos/tsbank:$NEW_TAG
-    #     docker push lexmarcos/tsbank:latest
-
-    # - name: Remove node_modules folder
-    #   run: rm -rf node_modules
-
-    # - name: Upload release package
-    #   uses: actions/upload-artifact@v4.3.4
-    #   with:
-    #     name: ${{ github.ref_name }}
-    #     path: |
-    #       ./release
-    #       !./.git/
-    
-  tag:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.1.7
-      with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Create release tag
+    - name: Create Docker image
       run: |
         LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
         
@@ -125,7 +55,76 @@ jobs:
         
         echo "New tag: $NEW_TAG"
         
+        docker build -t lexmarcos/tsbank:$NEW_TAG .
+        docker tag lexmarcos/tsbank:$NEW_TAG lexmarcos/tsbank:latest
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3.2.0
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push Docker image
+      run: |
+        LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
+        
+        prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
+        major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
+        minor=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f2)
+        
+        minor=$((minor + 1))
+        
+        if [ "$minor" -eq 10 ]; then
+          minor=0
+          major=$((major + 1))
+        fi
+        
+        NEW_TAG="$prefix-$major.$minor"
+        
+        echo "New tag: $NEW_TAG"
+        
+        docker push lexmarcos/tsbank:$NEW_TAG
+        docker push lexmarcos/tsbank:latest
+
+    - name: Remove node_modules folder
+      run: rm -rf node_modules
+
+    - name: Upload release package
+      uses: actions/upload-artifact@v4.3.4
+      with:
+        name: ${{ github.ref_name }}
+        path: |
+          ./release
+          !./.git/
+    
+  tag:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.7
+      with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create release tag
+      run: |
         REPO="sudosuel/tsbank"
+        LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO/tags" | jq -r '.[0].name')
+        
+        prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
+        major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
+        minor=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f2)
+        
+        minor=$((minor + 1))
+        
+        if [ "$minor" -eq 10 ]; then
+          minor=0
+          major=$((major + 1))
+        fi
+        
+        NEW_TAG="$prefix-$major.$minor"
+        
+        echo "New tag: $NEW_TAG"
 
         GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         
