@@ -38,7 +38,8 @@ jobs:
 
     - name: Create Docker image
       run: |
-        LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
+        REPO="sudosuel/tsbank"
+        LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO/tags" | jq -r '.[0].name')
         
         prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
         major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
@@ -66,7 +67,8 @@ jobs:
 
     - name: Push Docker image
       run: |
-        LATEST_TAG=$(curl -s "https://api.github.com/repos/sudosuel/tsbank/tags" | jq -r '.[0].name')
+        REPO="sudosuel/tsbank"
+        LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO/tags" | jq -r '.[0].name')
         
         prefix=$(echo "$LATEST_TAG" | cut -d'-' -f1)
         major=$(echo "$LATEST_TAG" | cut -d'-' -f2 | cut -d'.' -f1)
@@ -94,7 +96,7 @@ jobs:
       with:
         name: ${{ github.ref_name }}
         path: |
-          ./release
+          ./
           !./.git/
     
   tag:
